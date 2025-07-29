@@ -11,4 +11,7 @@ public interface UserService {
      * @return
      */
     Response<String> LoginAndRegister(UserLoginReqVO userLoginReqVO);
+
+
+    Long registerUser(String phone);
 }
