@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Response<String> LoginAndRegister(UserLoginReqVO userLoginReqVO) {
-        //获取密码和手机号
+        //获取type和手机号
         Integer type = userLoginReqVO.getType();
         String phone = userLoginReqVO.getPhone();
 
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
                 String code = userLoginReqVO.getCode();
 
                 //判断验证码是否为空
-                Preconditions.checkArgument(StringUtils.isBlank(code),Response.fail("验证码为空"));
+                Preconditions.checkArgument(!StringUtils.isBlank(code),Response.fail("验证码为空"));
 
                 //判断验证码是否正确
                 String key = RedisKeyConstants.buildVerificationCodeKey(phone);

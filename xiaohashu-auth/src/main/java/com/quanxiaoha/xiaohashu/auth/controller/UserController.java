@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.http.HttpRequest;
+
 @RestController
 @RequestMapping("/user")
 @Slf4j
@@ -25,5 +27,12 @@ public class UserController {
     @ApiOperationLog(description = "用户登陆/注册")
     public Response<String> loginAndRegister(@RequestBody @Validated UserLoginReqVO userLoginReqVO){
         return userService.LoginAndRegister(userLoginReqVO);
+    }
+
+    @PostMapping("/logout")
+    @ApiOperationLog(description = "用户退出登陆")
+    public Response<String> logout(){
+        log.info("wo");
+        return Response.success("退出登陆成功");
     }
 }

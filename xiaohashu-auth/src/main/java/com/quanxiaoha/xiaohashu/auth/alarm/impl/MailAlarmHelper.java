@@ -12,7 +12,6 @@ public class MailAlarmHelper implements AlarmInterface {
 
         //业务逻辑
 
-
         return true;
     }
 }
