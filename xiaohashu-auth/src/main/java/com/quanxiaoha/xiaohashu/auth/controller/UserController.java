@@ -8,10 +8,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.http.HttpRequest;
 
@@ -31,8 +28,8 @@ public class UserController {
 
     @PostMapping("/logout")
     @ApiOperationLog(description = "用户退出登陆")
-    public Response<String> logout(){
-        log.info("wo");
+    public Response<String> logout(@RequestHeader("userId") String userId){
+        log.info("网关传递过来的 ======>userId:{}", userId);
         return Response.success("退出登陆成功");
     }
 }
