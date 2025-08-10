@@ -6,11 +6,9 @@ import com.quanxiaoha.xiaohashu.auth.model.vo.user.UserLoginReqVO;
 import com.quanxiaoha.xiaohashu.auth.service.UserService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.http.HttpRequest;
 
 @RestController
 @RequestMapping("/user")
@@ -28,8 +26,7 @@ public class UserController {
 
     @PostMapping("/logout")
     @ApiOperationLog(description = "用户退出登陆")
-    public Response<String> logout(@RequestHeader("userId") String userId){
-        log.info("网关传递过来的 ======>userId:{}", userId);
-        return Response.success("退出登陆成功");
+    public Response<String> logout(){
+        return userService.logout();
     }
 }

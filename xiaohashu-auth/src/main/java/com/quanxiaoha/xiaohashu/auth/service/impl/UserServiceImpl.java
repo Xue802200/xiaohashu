@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.quanxiaoha.framework.biz.context.holder.LoginUserContextHolder;
 import com.quanxiaoha.framework.common.enums.DeletedEnum;
 import com.quanxiaoha.framework.common.enums.StatusEnum;
 import com.quanxiaoha.framework.common.response.Response;
@@ -162,6 +163,16 @@ public class UserServiceImpl implements UserService {
                 return null;
             }
         });
+    }
+
+    @Override
+    public Response<String> logout() {
+        Long userId = LoginUserContextHolder.getUserId();
+        //退出登录，指定userId
+        log.info("用户退出登录,userId:{}",userId);
+        StpUtil.logout(userId);
+
+        return Response.success("退出登录成功!");
     }
 
 }

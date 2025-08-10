@@ -12,6 +12,17 @@ public interface UserService {
      */
     Response<String> LoginAndRegister(UserLoginReqVO userLoginReqVO);
 
-
+    /**
+     * 注册用户信息
+     * @param phone
+     * @return
+     */
     Long registerUser(String phone);
+
+    /**
+     * 用户退出登录
+     * @param
+     * @return
+     */
+    Response<String> logout();
 }
