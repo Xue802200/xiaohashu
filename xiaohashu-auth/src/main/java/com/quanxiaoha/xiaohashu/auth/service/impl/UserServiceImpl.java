@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.quanxiaoha.framework.biz.context.holder.LoginUserContextHolder;
 import com.quanxiaoha.framework.common.enums.DeletedEnum;
 import com.quanxiaoha.framework.common.enums.StatusEnum;
+import com.quanxiaoha.framework.common.exception.BizException;
 import com.quanxiaoha.framework.common.response.Response;
 import com.quanxiaoha.framework.common.util.JsonUtils;
 import com.quanxiaoha.xiaohashu.auth.constant.RedisKeyConstants;
@@ -35,6 +36,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 
@@ -70,7 +72,7 @@ public class UserServiceImpl implements UserService {
         LoginTypeEnum loginTypeEnum = LoginTypeEnum.valueOf(type);
 
         if(loginTypeEnum == null){
-            return null;
+            return Response.fail(ResponseCodeEnum.LOGIN_TYPE_ERROR);
         }
 
           Long userId = null;
@@ -102,7 +104,26 @@ public class UserServiceImpl implements UserService {
                 }
             }
             case PASSWORD -> {
-                //todo
+                //账号密码登录
+                String password = userLoginReqVO.getPassword();
+                UserDO userDO = userDOMapper.selectByPhone(phone);
+
+                //查询账号是否注册
+                if(Objects.isNull(userDO)){
+                    throw new BizException(ResponseCodeEnum.USER_NOT_FOUND);
+                }
+
+                //拿到数据库存储的密文
+                String encodePassword = userDO.getPassword();
+
+                //比对提交的密码是否正确
+                boolean isPasswordCorrect = passwordEncoder.matches(password, encodePassword);
+
+                if(!isPasswordCorrect){
+                    throw new BizException(ResponseCodeEnum.PHONE_OR_PASSWORD_ERROR);
+                }
+
+                userId = userDO.getId();
             }
         }
 
