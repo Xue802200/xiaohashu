@@ -1,6 +1,7 @@
 package com.quanxiaoha.xiaohashu.auth.service;
 
 import com.quanxiaoha.framework.common.response.Response;
+import com.quanxiaoha.xiaohashu.auth.model.vo.user.UpdatePasswordReqVO;
 import com.quanxiaoha.xiaohashu.auth.model.vo.user.UserLoginReqVO;
 
 public interface UserService {
@@ -25,4 +26,6 @@ public interface UserService {
      * @return
      */
     Response<String> logout();
+
+    Response<String> updatePassword(UpdatePasswordReqVO updatePasswordReqVO);
 }

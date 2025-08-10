@@ -19,6 +19,7 @@ import com.quanxiaoha.xiaohashu.auth.domain.mapper.UserDOMapper;
 import com.quanxiaoha.xiaohashu.auth.domain.mapper.UserRoleDOMapper;
 import com.quanxiaoha.xiaohashu.auth.enums.LoginTypeEnum;
 import com.quanxiaoha.xiaohashu.auth.enums.ResponseCodeEnum;
+import com.quanxiaoha.xiaohashu.auth.model.vo.user.UpdatePasswordReqVO;
 import com.quanxiaoha.xiaohashu.auth.model.vo.user.UserLoginReqVO;
 import com.quanxiaoha.xiaohashu.auth.service.UserService;
 import jakarta.annotation.Resource;
@@ -26,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -40,16 +42,18 @@ import java.util.Objects;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+    @Resource
     private UserDOMapper userDOMapper;
-    @Autowired
+    @Resource
     private RedisTemplate<String,Object> redisTemplate;
-    @Autowired
+    @Resource
     private UserRoleDOMapper userRoleDOMapper;
     @Resource
     private TransactionTemplate transactionTemplate;
     @Resource
     private RoleDOMapper roleDOMapper;
+    @Resource
+    private PasswordEncoder passwordEncoder;
 
     /**
      * 用户登陆和注册功能
@@ -165,6 +169,10 @@ public class UserServiceImpl implements UserService {
         });
     }
 
+    /**
+     * 用户退出功能
+     * @return
+     */
     @Override
     public Response<String> logout() {
         Long userId = LoginUserContextHolder.getUserId();
@@ -173,6 +181,33 @@ public class UserServiceImpl implements UserService {
         StpUtil.logout(userId);
 
         return Response.success("退出登录成功!");
+    }
+
+
+    /**
+     * 用户更改密码
+     * @param updatePasswordReqVO
+     * @return
+     */
+    @Override
+    public Response<String> updatePassword(UpdatePasswordReqVO updatePasswordReqVO) {
+        //获取新密码加密
+        String newPassword = updatePasswordReqVO.getNewPassword();
+        String encodePassword = passwordEncoder.encode(newPassword);
+
+        //获取当前用户
+        Long userId = LoginUserContextHolder.getUserId();
+
+        //更新
+        UserDO user = UserDO.builder()
+                .id(userId)
+                .password(encodePassword)
+                .updateTime(LocalDateTime.now())
+                .build();
+
+        userDOMapper.updateByPrimaryKeySelective(user);
+
+        return Response.success("密码更新成功!");
     }
 
 }
